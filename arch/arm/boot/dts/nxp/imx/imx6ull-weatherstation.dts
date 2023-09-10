@@ -9,7 +9,7 @@
 
 / {
 	model = "Weather Station i.MX6ULL Board Computer";
-	compatible = "fsl,imx6ull-14x14-evk", "fsl,imx6ull";
+	compatible = "fsl,imx6ull";
 
 	chosen {
 		stdout-path = &uart1;
@@ -40,7 +40,7 @@
 
 		led0: cpu {
 			label = "cpu";
-			gpios = <&gpio2 10 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio2 15 GPIO_ACTIVE_LOW>;
 			default-state = "on";
 			linux,default-trigger = "heartbeat";
 		};
@@ -65,25 +65,14 @@
 		regulator-always-on;
 	};
 
-	reg_neo_m9: regulator@2 {
-		compatible = "regulator-fixed";
-		regulator-name = "neo-m9-power";
-		regulator-min-microvolt = <3300000>;
-		regulator-max-microvolt = <3300000>;
-		gpios = <&gpio1 19 GPIO_ACTIVE_HIGH>;
-		startup-delay-us = <20000>;
-		enable-active-high;
-		regulator-always-on;
-	};
-
-	reg_rs485: regulator@3 {
-		compatible = "regulator-fixed";
-		regulator-name = "rs-485-12vpower";
-		regulator-min-microvolt = <12000000>;
-		regulator-max-microvolt = <12000000>;
-		gpios = <&gpio5 3 GPIO_ACTIVE_HIGH>;
-		enable-active-high;
-	};
+	// reg_rs485: regulator@3 {
+	// 	compatible = "regulator-fixed";
+	// 	regulator-name = "rs-485-12vpower";
+	// 	regulator-min-microvolt = <12000000>;
+	// 	regulator-max-microvolt = <12000000>;
+	// 	gpios = <&gpio5 3 GPIO_ACTIVE_HIGH>;
+	// 	enable-active-high;
+	// };
 };
 
 &fec1 {
@@ -174,17 +163,20 @@
 &uart2 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_uart2>;
-	uart-has-rtscts;
-	/* for DTE mode, add below change */
-	/* fsl,dte-mode; */
-	/* pinctrl-0 = <&pinctrl_uart2dte>; */
+	rts-gpios = <&gpio1 22 GPIO_ACTIVE_HIGH>;
+	status = "okay";
+};
+
+&uart3 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_uart3>;
+	rts-gpios = <&gpio1 27 GPIO_ACTIVE_HIGH>;
 	status = "okay";
 };
 
 &uart4 {
     pinctrl-names = "default";
     pinctrl-0 = <&pinctrl_uart4>;
-    rts-gpios = <&gpio1 22 GPIO_ACTIVE_HIGH>;
     status = "okay";
 };
 
@@ -227,46 +219,74 @@
 };
 
 &gpio3 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_gpio3>;
+	gpio-line-names = "IO-0",
+		"IO-1",
+		"IO-2",
+		"IO-3",
+		"IO-4",
+		"IO-5",
+		"IO-6",
+		"IO-7",
+		"IO-8",
+		"IO-9",
+		"IO-10",
+		"IO-11",
+		"IO-12",
+		"IO-13",
+		"IO-14",
+		"IO-15",
+		"IO-16",
+		"IO-17",
+		"IO-18",
+		"IO-19",
+		"IO-20",
+		"IO-21",
+		"IO-22",
+		"IO-23",
+		"IO-24",
+		"IO-25",
+		"IO-26",
+		"IO-27",
+		"IO-28";
+};
 
-	// gpio-line-names = "GPO0",
-	// "GPIO1",
-	// "GPIO2",
-	// "GPIO3",
-	// "GPIO4",
-	// "GPIO5",
-	// "GPIO6",
-	// "GPIO7",
-	// "GPIO8",
-	// "GPIO9",
-	// "GPIO10",
-	// "";
-}; 
+&gpio4 {
+	status="okay";
+};
 
 &iomuxc {
 	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_hog_1 &pinctrl_gpio3 &pinctrl_gpio4>;
+
 	pinctrl_hog_1: hoggrp-1 {
 	fsl,pins = <
-		MX6UL_PAD_NAND_CE1_B__GPIO4_IO14    0x17059 /* LTE RESET */
-		MX6ULL_PAD_CSI_HSYNC__ESAI_TX1		0x17059 /* ADS Alert */
-		MX6UL_PAD_UART1_RTS_B__GPIO1_IO19	0x17059 /* GPS Enable */
+		MX6UL_PAD_NAND_CE1_B__GPIO4_IO14    	0xb0 	/* LTE RESET */
+		MX6ULL_PAD_CSI_HSYNC__ESAI_TX1			0xb0 	/* ADS Alert */
+		MX6UL_PAD_UART1_RTS_B__GPIO1_IO19		0xb0 	/* GPS Enable */
 		>;
 	};
 
 	pinctrl_gpio3: gpio3grp {
 		fsl,pins = <
-		MX6UL_PAD_LCD_CLK__GPIO3_IO00			0x17059 /* GPO0 */
-		MX6UL_PAD_LCD_ENABLE__GPIO3_IO01		0x17059 /* GPO1 */
-		MX6UL_PAD_LCD_HSYNC__GPIO3_IO02			0x17059 /* GPO2 */
-		MX6UL_PAD_LCD_VSYNC__GPIO3_IO03			0x17059 /* GPO3 */
-		MX6UL_PAD_LCD_RESET__GPIO3_IO04			0x17059 /* GPO4 */
-		MX6UL_PAD_LCD_DATA00__GPIO3_IO05		0x17059 /* GPO5 */
-		MX6UL_PAD_LCD_DATA01__GPIO3_IO06		0x17059 /* GPO6 */
-		MX6UL_PAD_LCD_DATA02__GPIO3_IO07		0x17059 /* GPO7 */
-		MX6UL_PAD_LCD_DATA03__GPIO3_IO08		0x17059 /* GPO8 */
-		MX6UL_PAD_LCD_DATA04__GPIO3_IO09		0x17059 /* GPO9 */
-		MX6UL_PAD_LCD_DATA05__GPIO3_IO10		0x17059 /* GPO10 */
+		MX6UL_PAD_LCD_CLK__GPIO3_IO00			0x10B0 /* GPO0 */
+		MX6UL_PAD_LCD_ENABLE__GPIO3_IO01		0x10B0 /* GPO1 */
+		MX6UL_PAD_LCD_HSYNC__GPIO3_IO02			0x10B0 /* GPO2 */
+		MX6UL_PAD_LCD_VSYNC__GPIO3_IO03			0x10B0 /* GPO3 */
+		MX6UL_PAD_LCD_RESET__GPIO3_IO04			0x10B0 /* GPO4 */
+		MX6UL_PAD_LCD_DATA00__GPIO3_IO05		0x10B0 /* GPO5 */
+		MX6UL_PAD_LCD_DATA01__GPIO3_IO06		0x10B0 /* GPO6 */
+		MX6UL_PAD_LCD_DATA02__GPIO3_IO07		0x10B0 /* GPO7 */
+		MX6UL_PAD_LCD_DATA03__GPIO3_IO08		0x10B0 /* GPO8 */
+		MX6UL_PAD_LCD_DATA04__GPIO3_IO09		0x10B0 /* GPO9 */
+		MX6UL_PAD_LCD_DATA05__GPIO3_IO10		0x10B0 /* GPO10 */
+		MX6UL_PAD_LCD_DATA17__GPIO3_IO22		0x10B0 /* GPO22 */
+		MX6UL_PAD_LCD_DATA18__GPIO3_IO23		0x10B0 /* GPO23 */
+		>;
+	};
+
+	pinctrl_gpio4: gpio4grp {
+		fsl,pins = <
+		MX6UL_PAD_CSI_DATA06__GPIO4_IO27			0x10B0 /* GPO27 */
 		>;
 	};
 
@@ -324,10 +344,10 @@
 		>;
 	};
 
-	pinctrl_uart2dte: uart2dtegrp {
+	pinctrl_uart3: uart3grp {
 		fsl,pins = <
-			MX6UL_PAD_UART2_TX_DATA__UART2_DTE_RX	0x1b0b1
-			MX6UL_PAD_UART2_RX_DATA__UART2_DTE_TX	0x1b0b1
+			MX6UL_PAD_UART3_TX_DATA__UART3_DCE_TX	0x1b0b1
+			MX6UL_PAD_UART3_RX_DATA__UART3_DCE_RX	0x1b0b1
 		>;
 	};
 
@@ -335,7 +355,6 @@
 		fsl,pins = <
 			MX6UL_PAD_UART4_TX_DATA__UART4_DCE_TX   0x1b0b1
 			MX6UL_PAD_UART4_RX_DATA__UART4_DCE_RX   0x1b0b1
-			MX6UL_PAD_UART1_CTS_B__GPIO1_IO18       0x1b0b1 /* RS485 RE/DE */
 		>;
 	};
 
@@ -347,7 +366,7 @@
 
 	pinctrl_leds: ledgrp {
 		fsl,pins = <
-			MX6UL_PAD_ENET2_RX_EN__GPIO2_IO10 0x1b0b0
+			MX6UL_PAD_ENET2_RX_ER__GPIO2_IO15 0x1b0b0
 		>;
 	};
 
@@ -364,7 +383,8 @@
 };
 
 &iomuxc_snvs {                                                                                                                                    
-	pinctrl-names = "default_snvs";                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+	pinctrl-names = "default_snvs";
+	pinctrl-0 = <&pinctrl_hog_2>;                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 	pinctrl_hog_2: hoggrp-2 {                                                                                                                 
 		fsl,pins = <                                                                                                                      
 			MX6ULL_PAD_SNVS_TAMPER0__GPIO5_IO00     0x80000000                                                                
