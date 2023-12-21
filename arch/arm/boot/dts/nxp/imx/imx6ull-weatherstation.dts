@@ -170,7 +170,7 @@
 &uart3 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_uart3>;
-	rts-gpios = <&gpio1 27 GPIO_ACTIVE_HIGH>;
+	rts-gpios = <&gpio1 27 GPIO_ACTIVE_LOW>;
 	status = "okay";
 };
 
@@ -252,6 +252,12 @@
 
 &gpio4 {
 	status="okay";
+	gpio-line-names = "IO-0",
+		"IO-1",
+		"IO-2",
+		"IO-3",
+		"IO-4",
+		"IO-5";
 };
 
 &iomuxc {
